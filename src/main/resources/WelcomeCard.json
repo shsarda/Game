@@ -1,0 +1,24 @@
+{
+   "contentType": "application/vnd.microsoft.card.hero",
+   "content": {
+     "title": "Game",
+     "subtitle": "Select Rock/Paper/scissor",
+    "buttons": [
+      {
+         "type": "messageBack",
+         "title": "ROCK",
+         "value": "rock"
+       },
+      {
+         "type": "messageBack",
+         "title": "PAPER",
+         "value": "paper"
+       },
+       {
+         "type": "messageBack",
+         "title": "SCISSORS",
+         "value": "scissors"
+       }
+     ]
+   }
+}
