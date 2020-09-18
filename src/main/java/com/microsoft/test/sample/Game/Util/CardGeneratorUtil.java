@@ -35,20 +35,6 @@ public class CardGeneratorUtil {
 		}};
 
 		return card.toAttachment();
-
-		//		try {
-		//			InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("WelcomeCard.json");
-		//			String adaptiveCardJson = IOUtils.toString(input, StandardCharsets.UTF_8.toString());
-		//			return new Attachment() {{
-		//				setContentType("application/vnd.microsoft.card.hero");
-		//                setContent(Serialization.jsonToTree(adaptiveCardJson));
-		//			}};
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//			return new Attachment();
-		//		}
-
 	}
 
 	public static Attachment CreateScoreCard(String scoreCard) 
@@ -59,6 +45,18 @@ public class CardGeneratorUtil {
 		}};
 
 		return card.toAttachment();
+	}
+
+	public static HeroCard MessagingExtenstionCard() {
+
+		HeroCard card = new HeroCard() {{
+			setTitle("Click here to start the game!");
+			setTap(new CardAction() {{
+				setType(ActionTypes.MESSAGE_BACK);
+				setValue("StartGame");
+			}});
+		}};
+		return card;
 	}
 
 }

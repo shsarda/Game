@@ -1,0 +1,63 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+<style>
+table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 50%;
+}
+
+td, th {
+	border: 2px solid;
+	text-align: center;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #dddddd;
+}
+</style>
+</head>
+
+<body>
+	<p id="apps">Score DashBoard!</p>
+	<table id="tab"></table>
+
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		$.ajax({
+			type : "GET",
+			url : "/playerhistory",
+			contentType : "application/json",
+			success : function(data) {
+				var table = document.getElementById("tab");
+				var row = table.insertRow(0);
+				var cell1 = row.insertCell(0);
+				var cell2 = row.insertCell(1);
+				cell1.innerHTML = "Player Name";
+				cell2.innerHTML = "Score";
+				var j = 1;
+				for ( var i in data) {
+					var txt = i;
+					var val = data[i];
+					var row = table.insertRow(j);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					cell1.innerHTML = txt;
+					cell2.innerHTML = val;
+					j++
+				}
+			},
+			error : function() {
+				alert("not working");
+			}
+		});
+	</script>
+
+</body>
+
+</html>

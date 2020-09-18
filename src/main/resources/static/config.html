@@ -1,0 +1,18 @@
+<head>
+<script
+	src='https://statics.teams.cdn.office.net/sdk/v1.6.0/js/MicrosoftTeams.min.js'></script>
+</head>
+<body>
+	<p>Add Scorecard Dashboard to the team!</p>
+	<script>
+        microsoftTeams.initialize();        
+        microsoftTeams.settings.registerOnSaveHandler((saveEvent) => {
+            microsoftTeams.settings.setSettings({
+                websiteUrl: "https://newrpsgamebot.azurewebsites.net/tab.html",
+                contentUrl: "https://newrpsgamebot.azurewebsites.net/tab.html"
+            });
+            saveEvent.notifySuccess();
+        });
+        microsoftTeams.settings.setValidityState(true);
+    </script>
+</body>

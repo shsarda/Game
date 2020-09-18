@@ -3,6 +3,7 @@ package com.microsoft.test.sample.Game.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -21,8 +22,10 @@ import com.microsoft.bot.schema.ChannelAccount;
 import com.microsoft.bot.schema.ConversationParameters;
 import com.microsoft.bot.schema.ConversationReference;
 import com.microsoft.bot.schema.teams.TeamsChannelAccount;
+import com.microsoft.test.sample.Game.Controller.PlayerHistoryController;
 import com.microsoft.test.sample.Game.Model.Choice;
 import com.microsoft.test.sample.Game.Model.Player;
+import com.microsoft.test.sample.Game.Model.PlayerHistory;
 import com.microsoft.test.sample.Game.Model.RPSGame;
 import com.microsoft.test.sample.Game.Util.CardGeneratorUtil;
 
@@ -60,7 +63,7 @@ public class RPSGameService {
 			return null;
 		}
 
-		return turnContext.sendActivity(MessageFactory.text("GameStarted")).thenApply(send -> null);
+		return turnContext.sendActivity(MessageFactory.text("Game Started!")).thenApply(send -> null);
 	}
 
 	public CompletableFuture<Void> UpdateAllPlayersWithScoreCard(TurnContext turnContext, Choice choice) {
@@ -69,7 +72,10 @@ public class RPSGameService {
 		List<CompletableFuture<Void>> listOfConversations = new ArrayList<CompletableFuture<Void>>();
 
 		if (isGameOver()) {
-			Attachment scoreCard = CardGeneratorUtil.CreateScoreCard(CalculateTotalScore());
+			String scoreCardString = CalculateTotalScore();
+			if (scoreCardString == null)
+				return turnContext.sendActivity(MessageFactory.text("Something went wrong while reading/writing in-memory store")).thenApply(send -> null);
+			Attachment scoreCard = CardGeneratorUtil.CreateScoreCard(scoreCardString);
 			game.getPlayers().values().stream()
 			.forEach(player -> {
 				BotFrameworkAdapter adapter = (BotFrameworkAdapter) turnContext.getAdapter();
@@ -81,7 +87,7 @@ public class RPSGameService {
 		}
 		return CompletableFuture.allOf(listOfConversations.toArray(new CompletableFuture[0]));
 	}
-	
+
 	public boolean isGameOver() {
 		for (Player player : game.getPlayers().values()) {
 			if (player.getChoice().equals(Choice.NONE))
@@ -141,6 +147,8 @@ public class RPSGameService {
 
 	private String CalculateTotalScore() {
 		StringBuilder scoreCard = new StringBuilder();
+		PlayerHistory playerHistory = PlayerHistoryController.getPlayerHistoryInstance();
+		Map<String, Integer> scoreMap = playerHistory.getPlayerScoreMap();
 		for (Player player : game.getPlayers().values()) {
 			int score = 0;
 			switch (player.getChoice()) {
@@ -157,7 +165,13 @@ public class RPSGameService {
 				break;
 			}
 			scoreCard.append(player.getName() + " : " + score + "</br>");
+
+			int scoreHistory = scoreMap.getOrDefault(player.getName(), 0);
+			scoreMap.put(player.getName(), scoreHistory + score);
+
 		}
+		playerHistory.setPlayerScoreMap(scoreMap);
+
 		return scoreCard.toString();
 	}
 }
