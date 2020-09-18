@@ -1,4 +1,4 @@
-# Game
+# Rock Paper Scissors Game
 
 This is a multi-player Rock Paper Scissors game developed using [Bot Framework](https://dev.botframework.com).
 
